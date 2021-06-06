@@ -1,1 +1,1 @@
-# MLOps-Demo
+# MLOps-demo
