@@ -64,8 +64,7 @@ pipeline {
                         <p> Model Accuracy = ${this.result} </p>""",
                         mimeType: "text/html", 
                         compressLog: true, 
-                        recipientProviders: [ developers()],  
-                        subject: """Model Deployed - ${env.JOB_NAME}""", 
+                         subject: """Model Deployed - ${env.JOB_NAME}""", 
                         to: 'mohammed.a@cloudifyops.com')
                        } 
                 
