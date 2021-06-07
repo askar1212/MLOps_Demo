@@ -39,7 +39,6 @@ pipeline {
                             <p> please go to the Jenkins URL and check: ${env.BUILD_URL} </p>""",
                             mimeType: "text/html", 
                             compressLog: true, 
-                            recipientProviders: [buildUser(), culprits(), developers(), brokenBuildSuspects(), brokenTestsSuspects(), upstreamDevelopers(), requestor()],  
                             subject: """Model Retraining Needed - ${env.JOB_NAME}""", 
                             to: 'mohammed.a@cloudifyops.com')
                         }			           
