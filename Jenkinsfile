@@ -33,7 +33,7 @@ pipeline {
                     this.result = sh(script: "sudo cat result.txt", returnStdout: true).trim()
 	            this.resultNotTrim = sh(script: "sudo cat result.txt", returnStdout: true)
 	            echo "${this.result}"
-	            echo "${this.resultNotTrim}"
+	            echo "not trimmed ${this.resultNotTrim}"
                     int res="${result}"    
                     if ( 90 >= res ){
 					
