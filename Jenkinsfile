@@ -59,7 +59,7 @@ pipeline {
 				    else
 						{    
 			            sh ' sudo docker run -p 5000:5000  -d -i  -v /home/ec2-user:/root/  mlops-demo python3 diab_app.py '
-					    env.model=sh(script:  "curl -s ifconfig.me", returnStdout: true).trim()               
+					    env.model=sh(script:  "curl -s ifconfig.me", returnStdout: true)              
                         emailext ( attachLog: false, body: """<p> Model achieved desired accuracy, Is being deployed at  http://${env.model}:5000/  - </p>
                         <p> Model Accuracy = ${this.result} </p>""",
                         mimeType: "text/html", 
