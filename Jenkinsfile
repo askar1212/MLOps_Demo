@@ -30,9 +30,7 @@ pipeline {
             steps{
 			    script{
 				
-                    this.result = sh(script: "sudo cat result.txt", returnStdout: true).trim()
-	            this.resultNotTrim = sh(script: "sudo cat result.txt", returnStdout: true)
-	            echo "${this.result}"
+                    this.result = sh(script: "sudo cat result.txt", returnStdout: true)
 	            echo "not trimmed ${this.resultNotTrim}"
                     int res="${result}"    
                     if ( 90 >= res ){
@@ -62,7 +60,7 @@ pipeline {
 				    else
 						{    
 			            sh ' sudo docker run -p 5000:5000  -d -i  -v /home/ec2-user:/root/  mlops-demo python3 diab_app.py '
-					    env.model=sh(script:  "curl -s ifconfig.me", returnStdout: true).trim()               
+					    env.model=sh(script:  "curl -s ifconfig.me", returnStdout: true)              
                         emailext ( attachLog: false, body: """<p> Model achieved desired accuracy, Is being deployed at  http://${env.model}:5000/  - </p>
                         <p> Model Accuracy = ${this.result} </p>""",
                         mimeType: "text/html", 
