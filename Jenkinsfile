@@ -30,7 +30,7 @@ pipeline {
             steps{
 			    script{
 				
-                    this.result = sh(script: "sudo cat result.txt", returnStdout: true).trim()				
+                    this.result = sh(script: "sudo cat result.txt", returnStdout: true)				
                     int res="${result}"    
                     if ( 90 >= res ){
 					
