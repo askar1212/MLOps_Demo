@@ -1,15 +1,12 @@
 #!/bin/bash
 
-#Define variables
-ACCOUNT_EMAIL="user@example.com"
-ACCOUNT_NAME="My New Account"
-ACCOUNT_ROLE="OrganizationAccountAccessRole"
-
-# AWS CLI configuration
-aws configure
+# Define variables
+EMAIL="example@email.com"
+NAME="My New Account"
+ROLE_NAME="OrganizationAccountAccessRole"
 
 # Create the new AWS account
-ACCOUNT_ID=$(aws organizations create-account --email EMAIL --account-name NAME --role-name ROLE-NAME --query 'CreateAccountStatus.AccountId' --output text)
+ACCOUNT_ID=$(aws organizations create-account --email $EMAIL --account-name $NAME --role-name $ROLE_NAME --query 'CreateAccountStatus.AccountId' --output text)
 
 # Wait for the new account to be created and enabled
 echo "Waiting for the new account to be created and enabled..."
@@ -20,7 +17,7 @@ done
 echo "New account created and enabled!"
 
 # Configure AWS CLI for the new account
-aws configure set profile.$ACCOUNT_ID.role_arn arn:aws:iam::$ACCOUNT_ID:role/ROLE-NAME --profile $ACCOUNT_ID
+aws configure set profile.$ACCOUNT_ID.role_arn arn:aws:iam::$ACCOUNT_ID:role/$ROLE_NAME --profile $ACCOUNT_ID
 
 # Test the new configuration
 echo "Testing the new configuration..."
