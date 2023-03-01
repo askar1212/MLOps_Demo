@@ -113,4 +113,22 @@ KEYS=$(aws iam create-access-key --user-name $USERNAME --profile $PROFILE_NAME)
 ACCESS_KEY=$(echo $KEYS | jq -r '.AccessKey.AccessKeyId')
 SECRET_KEY=$(echo $KEYS | jq -r '.AccessKey.SecretAccessKey')
 
-
+-----------------------------------------------
+if aws iam get-user --user-name $IAM_USER_NAME --profile $AWS_PROFILE > /dev/null 2>&1; then
+    # Get the existing access key if it exists
+    ACCESS_KEY_ID=$(aws iam list-access-keys --user-name $IAM_USER_NAME --profile $AWS_PROFILE --query 'AccessKeyMetadata[].AccessKeyId' --output text)
+    if [ -n "$ACCESS_KEY_ID" ]; then
+        SECRET_ACCESS_KEY=$(aws iam list-access-keys --user-name $IAM_USER_NAME --profile $AWS_PROFILE --query 'AccessKeyMetadata[?AccessKeyId==`'$ACCESS_KEY_ID'`].SecretAccessKey' --output text)
+        echo "Access key already exists for IAM user $IAM_USER_NAME:"
+        echo "Access key ID: $ACCESS_KEY_ID"
+        echo "Secret access key: $SECRET_ACCESS_KEY"
+    else
+        # Create a new access key if one does not exist
+        KEY_PAIR=$(aws iam create-access-key --user-name $IAM_USER_NAME --profile $AWS_PROFILE --query 'AccessKey')
+        ACCESS_KEY_ID=$(echo $KEY_PAIR | jq -r '.AccessKeyId')
+        SECRET_ACCESS_KEY=$(echo $KEY_PAIR | jq -r '.SecretAccessKey')
+        echo "Access key created for IAM user $IAM_USER_NAME:"
+        echo "Access key ID: $ACCESS_KEY_ID"
+        echo "Secret access key: $SECRET_ACCESS_KEY"
+    fi
+else
