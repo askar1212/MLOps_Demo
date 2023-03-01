@@ -91,3 +91,19 @@ output "secret_key" {
   value = aws_iam_access_key.example_access_key.secret
 }
 
+------------------------------------------
+#!/bin/bash
+
+# List all accounts in the organization and filter by name
+ACCOUNT_NAME="My Account"
+ACCOUNT_ID=$(aws organizations list-accounts --query "Accounts[?Name=='$ACCOUNT_NAME'].Id" --output text | tr -d '[:space:]')
+
+if [ -z "$ACCOUNT_ID" ]; then
+  echo "Account with name '$ACCOUNT_NAME' not found"
+  exit 1
+fi
+
+# Test the configuration by listing S3 buckets in the account
+aws s3 ls --profile $ACCOUNT_ID
+
+
