@@ -22,3 +22,72 @@ aws configure set profile.$ACCOUNT_ID.role_arn arn:aws:iam::$ACCOUNT_ID:role/$RO
 # Test the new configuration
 echo "Testing the new configuration..."
 aws s3 ls --profile $ACCOUNT_ID
+
+----------------------------------------------------------
+
+provider "aws" {
+  region = "us-east-1" // or your preferred region
+}
+
+resource "aws_organizations_account" "example_account" {
+  name = "example-account"
+  email = "example@example.com"
+  role_name = "example-role"
+}
+
+resource "aws_iam_role" "example_role" {
+  name = "example-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${aws_organizations_account.example_account.id}:root"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_access_key" "example_access_key" {
+  user = aws_iam_role.example_role.name
+}
+
+provider "aws" {
+  alias = "example_provider"
+  region = "us-west-2" // or your preferred region for the provider
+  access_key = aws_iam_access_key.example_access_key.id
+  secret_key = aws_iam_access_key.example_access_key.secret
+}
+
+provider "aws" {
+  alias = "another_provider"
+  region = "eu-west-1" // or your preferred region for the provider
+  access_key = aws_iam_access_key.example_access_key.id
+  secret_key = aws_iam_access_key.example_access_key.secret
+}
+
+resource "aws_instance" "example_instance" {
+  provider = aws.example_provider
+  // specify instance configuration here
+}
+
+resource "aws_instance" "another_example_instance" {
+  provider = aws.another_provider
+  // specify instance configuration here
+}
+
+output "account_id" {
+  value = aws_organizations_account.example_account.id
+}
+
+output "access_key" {
+  value = aws_iam_access_key.example_access_key.id
+}
+
+output "secret_key" {
+  value = aws_iam_access_key.example_access_key.secret
+}
+
