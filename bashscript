@@ -113,6 +113,8 @@ KEYS=$(aws iam create-access-key --user-name $USERNAME --profile $PROFILE_NAME)
 ACCESS_KEY=$(echo $KEYS | jq -r '.AccessKey.AccessKeyId')
 SECRET_KEY=$(echo $KEYS | jq -r '.AccessKey.SecretAccessKey')
 
+aws secretsmanager create-secret --name "access-key-$USERNAME" --secret-string "{\"AccessKey\": \"$ACCESS_KEY\", \"SecretKey\": \"$SECRET_KEY\"}"
+
 -----------------------------------------------
 if aws iam get-user --user-name $IAM_USER_NAME --profile $AWS_PROFILE > /dev/null 2>&1; then
     # Get the existing access key if it exists
